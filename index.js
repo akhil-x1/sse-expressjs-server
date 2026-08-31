@@ -24,7 +24,7 @@ app.get("/api/events", (req, res) => {
   userConnections.set(userId, res);
   console.log(`User id ${userId} connected to SSE`);
   res.write(
-    `data: ${JSON.stringify({ message: "Connected succesfully!\n\n" })} `,
+    `data: ${JSON.stringify({ message: "Connected succesfully!" }) + "\n\n"}`,
   );
 
   req.on("close", () => {
@@ -34,7 +34,7 @@ app.get("/api/events", (req, res) => {
 });
 
 app.post("/api/notify-user", (req, res) => {
-  const { targetUserId, message } = req.body();
+  const { targetUserId, message } = req.body;
 
   const userStream = userConnections.get(targetUserId);
   if (!userStream) {
@@ -49,8 +49,8 @@ app.post("/api/notify-user", (req, res) => {
     timestamp: new Date().toISOString(),
   };
 
-  userStream.write("Event: notification\n");
-  userStream.write(`Data : ${JSON.stringify(payload)}\n`);
+  userStream.write("event: notification\n");
+  userStream.write(`data: ${JSON.stringify(payload)}` + "\n\n");
 
   res.json({ status: "success", sentTo: targetUserId });
 });
